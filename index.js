@@ -89,10 +89,8 @@ app.post('/send-notifications', async (req, res) => {
 
   // Remove subscription if it has been cancelled or expired
   results.forEach(result => {
-    if (result.status === 'rejected') {
-      if (result.reason.statusCode === 410) {
-        delete subscriptions[result.reason.endpoint];
-      }
+    if (result.status === 'rejected' && result.reason.statusCode === 410) {
+      delete subscriptions[result.reason.endpoint];
     }
   });
 
