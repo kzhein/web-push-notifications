@@ -14,15 +14,15 @@ const urlBase64ToUint8Array = base64String => {
 };
 
 const subscribeAgain = async () => {
-  const VAPID_PUBLIC_KEY = await fetch('/vapid-public-key').then(res =>
-    res.text()
-  );
+  const VAPID_PUBLIC_KEY = await fetch(
+    '/.netlify/functions/app/vapid-public-key'
+  ).then(res => res.text());
   const subscription = await self.registration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
   });
 
-  await fetch('/subscribe', {
+  await fetch('/.netlify/functions/app/subscribe', {
     method: 'POST',
     body: JSON.stringify(subscription),
     headers: {

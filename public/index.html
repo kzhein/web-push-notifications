@@ -72,16 +72,16 @@
             return alert('Already subscribed');
           }
 
-          const VAPID_PUBLIC_KEY = await fetch('/vapid-public-key').then(res =>
-            res.text()
-          );
+          const VAPID_PUBLIC_KEY = await fetch(
+            '/.netlify/functions/app/vapid-public-key'
+          ).then(res => res.text());
 
           subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
           });
 
-          await fetch('/subscribe', {
+          await fetch('/.netlify/functions/app/subscribe', {
             method: 'POST',
             body: JSON.stringify(subscription),
             headers: {
@@ -110,7 +110,7 @@
           }
 
           await subscription.unsubscribe();
-          await fetch('/unsubscribe', {
+          await fetch('/.netlify/functions/app/unsubscribe', {
             method: 'POST',
             body: JSON.stringify(subscription),
             headers: {
@@ -128,7 +128,7 @@
         const title = titleInput.value;
         const body = bodyInput.value;
 
-        await fetch('/send-notifications', {
+        await fetch('/.netlify/functions/app/send-notifications', {
           method: 'POST',
           body: JSON.stringify({ title, body }),
           headers: {
