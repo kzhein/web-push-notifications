@@ -2,7 +2,41 @@ const express = require('express');
 const webpush = require('web-push');
 const mongoose = require('mongoose');
 const serverless = require('serverless-http');
-const Subscription = require('./Subscription');
+
+// Example subscription object
+// {
+//   endpoint: 'https://fcm.googleapis.com/fcm/send/fsdsfwefwesfsfsd',
+//   expirationTime: null,
+//   keys: {
+//     p256dh: 'fsdufsdkfkw4534nfdsf',
+//     auth: 'fdskafldsfk3459345',
+//   },
+// }
+const Subscription =
+  mongoose.models.Subscription || // Fix OverwriteModelError when running locally using netlify cli (this happens because model is defined in the same file and netlify cli reruns the whole file for every request but this is not a problem in production)
+  mongoose.model(
+    'Subscription',
+    new mongoose.Schema({
+      endpoint: {
+        type: String,
+        required: true,
+        unique: true,
+      },
+      expirationTime: {
+        type: String,
+      },
+      keys: {
+        p256dh: {
+          type: String,
+          required: true,
+        },
+        auth: {
+          type: String,
+          required: true,
+        },
+      },
+    })
+  );
 
 mongoose.set('strictQuery', false);
 mongoose

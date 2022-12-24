@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "dev": "netlify dev"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
