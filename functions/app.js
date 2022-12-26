@@ -13,7 +13,7 @@ const serverless = require('serverless-http');
 //   },
 // }
 const Subscription =
-  mongoose.models.Subscription || // Fix OverwriteModelError when running locally using netlify cli (this happens because model is defined in the same file and netlify cli reruns the whole file for every request but this is not a problem in production)
+  mongoose.models.Subscription || // Fix OverwriteModelError when running locally using netlify cli (this happens because model is defined in the same file and netlify cli reruns the whole file for every request unlike the real serverless environment)
   mongoose.model(
     'Subscription',
     new mongoose.Schema({
