@@ -1,26 +1,5 @@
-const urlBase64ToUint8Array = base64String => {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-};
-
-const subscribeAgain = async () => {
-  const VAPID_PUBLIC_KEY = await fetch(
-    '/.netlify/functions/app/vapid-public-key'
-  ).then(res => res.text());
-  const subscription = await self.registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-  });
+const subscribeAgain = async options => {
+  const subscription = await self.registration.pushManager.subscribe(options);
 
   await fetch('/.netlify/functions/app/subscribe', {
     method: 'POST',
@@ -44,5 +23,5 @@ self.addEventListener('push', event => {
 });
 
 self.addEventListener('pushsubscriptionchange', event => {
-  event.waitUntil(subscribeAgain());
+  event.waitUntil(subscribeAgain(event.oldSubscription.options));
 });
