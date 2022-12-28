@@ -38,15 +38,21 @@ const Subscription =
     })
   );
 
-mongoose.set('strictQuery', false);
-mongoose
-  .connect(process.env.DATABASE_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log('DB connection successful!');
-  });
+// global is used here to maintain a cached connection across hot reloads in development
+let connection = global.mongoose;
+if (!connection) {
+  mongoose.set('strictQuery', false);
+  mongoose
+    .connect(process.env.DATABASE_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(conn => {
+      global.mongoose = conn;
+      connection = conn;
+      console.log('DB connection successful!');
+    });
+}
 
 const { VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY } = process.env;
 
