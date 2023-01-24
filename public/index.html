@@ -123,6 +123,10 @@
 
       document.querySelector('form').addEventListener('submit', async e => {
         e.preventDefault();
+
+        const submitButton = e.target.querySelector('button');
+        submitButton.setAttribute('aria-busy', 'true');
+
         const titleInput = document.getElementById('title');
         const bodyInput = document.getElementById('body');
         const title = titleInput.value;
@@ -138,6 +142,8 @@
 
         titleInput.value = '';
         bodyInput.value = '';
+
+        submitButton.setAttribute('aria-busy', 'false');
       });
     </script>
   </body>
