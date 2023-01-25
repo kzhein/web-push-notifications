@@ -64,15 +64,13 @@ webpush.setVapidDetails(
 
 const app = express();
 
-const router = express.Router();
-
 app.use(express.json());
 
-router.get('/vapid-public-key', (req, res) => {
+app.get('/vapid-public-key', (req, res) => {
   res.status(200).send(VAPID_PUBLIC_KEY);
 });
 
-router.post('/subscribe', async (req, res) => {
+app.post('/subscribe', async (req, res) => {
   const subscription = req.body;
 
   const isSubscribed = await Subscription.findOne({
@@ -105,7 +103,7 @@ router.post('/subscribe', async (req, res) => {
   return res.status(201).json({ message: 'Subscribed for the first time!' });
 });
 
-router.post('/unsubscribe', async (req, res) => {
+app.post('/unsubscribe', async (req, res) => {
   const subscription = req.body;
 
   await Subscription.deleteOne({
@@ -115,7 +113,7 @@ router.post('/unsubscribe', async (req, res) => {
   return res.status(200).json({ message: 'Unsubscribed!' });
 });
 
-router.post('/send-notifications', async (req, res) => {
+app.post('/send-notifications', async (req, res) => {
   const { title, body } = req.body;
 
   if (!title || !body) {
@@ -153,6 +151,4 @@ router.post('/send-notifications', async (req, res) => {
   return res.status(200).json({ message: 'notification sent' });
 });
 
-app.use('/.netlify/functions/app', router);
-
-exports.handler = serverless(app);
+exports.handler = serverless(app, { basePath: '/.netlify/functions/app' });
